@@ -1,25 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.css';
 import AddTodoForm from './components/AddTodoForm';
 import TodoItem from './components/TodoItem';
+import { useSelector, useDispatch } from 'react-redux';
+import { addTodo, deleteTodo } from './todoSlice';
+import { RootState } from './store'
 
 function App() {
-  const [todos, setTodos] = useState([]);
+  const todos = useSelector((state: RootState) => state.todos)
+  const dispatch = useDispatch()
 
-  const addTodo = (text) => {
-    const newTodo = { id: Date.now(), text };
-    setTodos([...todos, newTodo])
-  }
-  const deleteTodo = (id) => {
-    const newTodos = todos.filter(todo => todo.id !== id);
-    setTodos(newTodos)
-  }
   return (
     <div className="App">
       <h1>TODO LIST</h1>
-      <AddTodoForm onAdd={addTodo} />
+      <AddTodoForm onAdd={(text) => dispatch(addTodo(text))} />
       <ul>
-        {todos.map(todo => (<TodoItem key={todo.id} todo={todo} onDelete={deleteTodo} />))}
+        {todos.map(todo => (<TodoItem key={todo.id} todo={todo} onDelete={(id) => dispatch(deleteTodo(id))} />))}
       </ul>
     </div>
   );
